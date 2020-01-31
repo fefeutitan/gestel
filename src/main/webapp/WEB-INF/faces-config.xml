@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+
+    <!-- Spring VariableResolver for JSF -->
+
+    <application>
+		<!-- variable-resolver>org.springframework.web.jsf.DelegatingVariableResolver</variable-resolver -->
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+		<resource-bundle>
+			<base-name>SystemMessages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+		<locale-config>
+			<default-locale>pt_BR</default-locale>
+		</locale-config>
+		<message-bundle>SystemMessages</message-bundle>
+        <!-- REMOVIDO DA VERSAO 2.0 -->
+		<!-- view-handler>com.sun.facelets.FaceletViewHandler</view-handler-->
+	</application>
+
+    <converter>
+        <converter-for-class>br.gov.ce.seinfra.model.DefaultModel</converter-for-class>
+        <converter-class>br.gov.ce.seinfra.view.converters.SimpleEntityConverter</converter-class>
+    </converter>
+
+    <converter>
+        <converter-id>DefaultModel</converter-id>
+        <converter-class>br.gov.ce.seinfra.view.converters.SimpleEntityConverter</converter-class>
+    </converter>
+
+	<converter>
+		<converter-id>converter.numeros</converter-id>
+		<converter-class>br.gov.ce.seinfra.view.converters.OnlyNumbersConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>java.math.BigDecimal</converter-for-class>
+		<converter-class>br.gov.ce.seinfra.view.converters.CurrencyConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>java.lang.Double</converter-for-class>
+		<converter-class>br.gov.ce.seinfra.view.converters.DoubleConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>java.lang.Enum</converter-for-class>
+		<converter-class>br.gov.ce.seinfra.view.converters.EnumConverter</converter-class>
+	</converter>
+    
+    <converter>
+        <converter-for-class>java.util.Date</converter-for-class>
+        <converter-class>br.gov.ce.seinfra.view.converters.DateConverter</converter-class>
+    </converter>
+
+    <converter>
+        <converter-id>converter.filesize</converter-id>
+        <converter-class>br.gov.ce.seinfra.view.converters.FileSizeConverter</converter-class>
+    </converter>
+    
+    <lifecycle>
+        <phase-listener>br.gov.ce.seinfra.view.listeners.PostRedirectGetListener</phase-listener>
+    </lifecycle>
+    
+    <!-- BEANS -->
+    <managed-bean>
+        <managed-bean-name>dataCorrente</managed-bean-name>
+        <managed-bean-class>java.util.Date</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>pegaUsuario</managed-bean-name>
+        <managed-bean-class>br.gov.ce.seinfra.view.PegaUsuarioBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>facade</property-name>
+            <value>#{pegaUsuarioFacade}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>permissoes</managed-bean-name>
+        <managed-bean-class>br.gov.ce.seinfra.gestel.view.PermissoesBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>facade</property-name>
+            <value>#{defaultPermissoesFacade}</value>
+        </managed-property>
+    </managed-bean>
+    
+
+</faces-config>

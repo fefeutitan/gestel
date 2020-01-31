@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['conta.title']}</ui:define>
+		<ui:define name="operacao">${msg[crudConta.selecionado.id gt 0 ? 'commons.alterar' : 'commons.criar']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudConta}" cancelar="true"
+				novo="#{permissoes.conta.criar}"
+				salvar="#{permissoes.conta.editar and not crudConta.selecionado.isEnviada()}"
+				analise="#{not crudConta.selecionado.isEnviada() and not empty crudConta.selecionado.imagens}"
+				enviar="false" />
+		</ui:define>
+		<ui:define name="body">
+
+			<h:panelGrid columns="2" styleClass="tab-edita" cellspacing="0"
+				columnClasses="width-60,width-40" style="width: 100%;">
+				<h:column>
+
+					<fieldset>
+
+						<legend>${msg['orgao.title']}</legend>
+						<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+							columnClasses="rotulo,none">
+
+							<seinfra:outputText id="out-orgao-nome"
+								value="#{crudConta.usuario.unidadeAdministrativa.nome}"
+								label="#{msg['orgao.title']}" />
+
+							<seinfra:outputText id="out-orgao-sigla"
+								value="#{crudConta.usuario.unidadeAdministrativa.sigla}"
+								label="#{msg['orgao.sigla']}" />
+
+							<seinfra:inputDate id="dataMesAno"
+								label="#{msg['conta.mes.ano']}"
+								value="#{crudConta.selecionado.mesAno}" showCalendar="false"
+								pattern="MM/yyyy" mask="99/9999" timeZone="America/Fortaleza"
+								style="width: 100px;" rendered="true" />
+
+							<seinfra:inputText id="in-conta-usuario"
+								label="#{msg['conta.usuario']}"
+								value="#{crudConta.usuario.nome}"
+								disabled="#{facesContext.renderResponse}" style="width: 300px;" />
+						</p:panelGrid>
+					</fieldset>
+
+					<p:row rendered="#{crudConta.selecionado.id>0}">
+
+						<fieldset>
+							<!-- LISTA DOS SALDOS -->
+							<legend>${msg['conta.saldo']}</legend>
+
+							<p:panel id="horizontal" header="Saldo" toggleable="true"
+								toggleOrientation="horizontal" collapsed="true">
+								<h:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+									columnClasses="rotulo,none"
+									rendered="#{crudConta.selecionado.id>0}">
+
+									<p:dataTable var="dotacao"
+										value="#{crudConta.selecionado.dotacoes}"
+										emptyMessage="Nenhuma dotação encontrado.">
+										<p:column headerText="Dotacao" styleClass="col-centralizado">
+											<h:outputText value="#{dotacao.numero}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+										</p:column>
+
+										<p:column headerText="Valor tesouro" styleClass="col-direito">
+											<h:outputText value="#{dotacao.valorTesouro}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+										</p:column>
+										<p:column headerText="Valor Exe. tesouro"
+											styleClass="col-direito">
+											<h:outputText value="#{dotacao.valorTesouroExe}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+										</p:column>
+
+										<p:column headerText="Saldo tesouro" styleClass="col-direito">
+											<h:outputText
+												value="#{dotacao.valorTesouro - dotacao.valorTesouroExe}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+
+										</p:column>
+
+										<p:column headerText="valor outras fontes"
+											styleClass="col-direito">
+											<h:outputText value="#{dotacao.valorOutrasFontes}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+										</p:column>
+
+
+										<p:column headerText="valor Exe. outras fontes"
+											styleClass="col-direito">
+											<h:outputText value="#{dotacao.valorOutrasFontesExe}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+										</p:column>
+
+										<p:column headerText="Saldo outras fontes"
+											styleClass="col-direito">
+											<h:outputText
+												value="#{dotacao.valorOutrasFontes - dotacao.valorOutrasFontesExe}"
+												rendered="#{crudDotacao.selecionado ne dotacao }" />
+
+										</p:column>
+									</p:dataTable>
+								</h:panelGrid>
+							</p:panel>
+
+
+						</fieldset>
+						<fieldset>
+
+							<!-- LISTA DOS VALORES DAS CONTAS -->
+							<legend>${msg['conta.vlr']}</legend>
+
+							<!-- BOTÃO ADICIONAR -->
+							<p:commandButton value="#{msg['commons.adicionar']}"
+								update="@form" actionListener="#{crudValor.adicionar}"
+								rendered="#{crudConta.selecionado.id>0}">
+							</p:commandButton>
+
+
+							<h:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+								columnClasses="rotulo,none">
+
+
+								<p:dataTable var="valor" resizableColumns="true"
+									value="#{crudConta.selecionado.valores}"
+									emptyMessage="Nenhum valor encontrado."
+									rendered="#{crudConta.selecionado.id>0}">
+
+
+									<p:column headerText="Mês Referência" styleClass="col-currency">
+
+										<seinfra:inputDate id="dataMesRefnput"
+											value="#{valor.mesReferencia}" showCalendar="false"
+											pattern="MM/yyyy" mask="99/9999" timeZone="America/Fortaleza"
+											style="width: 100px;"
+											rendered="#{crudValor.selecionado eq valor}" />
+
+
+
+										<seinfra:outputDate id="dataMesRefOutput"
+											value="#{valor.mesReferencia}" showCalendar="false"
+											pattern="MM/yyyy" mask="99/9999" timeZone="America/Fortaleza"
+											style="width: 100px;"
+											rendered="#{crudValor.selecionado ne valor}" />
+
+									</p:column>
+									<p:column headerText="Mapp" styleClass="col-currency">
+
+										<h:selectOneListbox value="#{valor.mapp}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado ne valor }" disabled="true">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.mapps}" />
+										</h:selectOneListbox>
+
+										<h:selectOneListbox value="#{valor.mapp}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado eq valor }" disabled="false">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.mapps}" />
+										</h:selectOneListbox>
+
+									</p:column>
+									<p:column headerText="Dotação" styleClass="col-currency">
+
+										<h:selectOneListbox value="#{valor.dotacao}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado ne valor }" disabled="true">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.dotacoes}" />
+										</h:selectOneListbox>
+
+										<h:selectOneListbox value="#{valor.dotacao}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado eq valor }" disabled="false">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.dotacoes}" />
+										</h:selectOneListbox>
+
+									</p:column>
+									<p:column headerText="Ação" styleClass="col-currency">
+
+										<h:selectOneListbox value="#{valor.acao}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado ne valor }" disabled="true">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.acoes}" />
+										</h:selectOneListbox>
+
+										<h:selectOneListbox value="#{valor.acao}" size="1"
+											style="width: 100px;" 
+											rendered="#{crudValor.selecionado eq valor }" disabled="false">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.acoes}" />
+										</h:selectOneListbox>
+
+									</p:column>
+									<p:column headerText="Projeto" styleClass="col-currency">
+
+										<h:selectOneListbox value="#{valor.pf}" size="1"
+											style="width: 110px;" 
+											rendered="#{crudValor.selecionado ne valor }" disabled="true">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.projetos}" />
+										</h:selectOneListbox>
+
+										<h:selectOneListbox value="#{valor.pf}" size="1"
+											style="width: 110px;" 
+											rendered="#{crudValor.selecionado eq valor }" disabled="false">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItems value="#{crudConta.projetos}" />
+										</h:selectOneListbox>
+
+									</p:column>
+									<p:column headerText="Tesouro" styleClass="col-currency">
+
+										<h:inputText value="#{valor.valorTesouro}"
+											styleClass="col-currency" style="width: 100px;"
+											rendered="#{crudValor.selecionado eq valor}" />
+
+										<h:outputText value="#{valor.valorTesouro}"
+											styleClass="col-currency" style="width: 100px;"
+											rendered="#{crudValor.selecionado ne valor}" />
+
+									</p:column>
+									<p:column headerText="Outra Fonte" styleClass="col-currency">
+
+										<h:inputText value="#{valor.valorOutraFonte}"
+											styleClass="col-currency" style="width: 100px;"
+											rendered="#{crudValor.selecionado eq valor}" />
+
+										<h:outputText value="#{valor.valorOutraFonte}"
+											styleClass="col-currency" style="width: 100px;"
+											rendered="#{crudValor.selecionado ne valor}" />
+
+									</p:column>
+
+									<!-- Operações EDITAR SALVAR EXCLUIR -->
+									<p:column headerText="" styleClass="col-currency"
+										style="width:36px">
+
+										<p:commandLink update="@form" action="#{crudValor.editar}"
+											rendered="#{crudValor.selecionado ne valor}">
+											<f:setPropertyActionListener value="#{valor}"
+												target="#{crudValor.selecionado}" />
+											<img src="/auth/imagens/table-edit.png"
+												title="#{msg['commons.salvar']}" />
+										</p:commandLink>
+
+										<p:commandLink update="@form" action="#{crudValor.salvar}"
+											rendered="#{crudValor.selecionado eq valor}">
+											<f:setPropertyActionListener value="#{valor}"
+												target="#{crudValor.selecionado}" />
+											<img src="/auth/imagens/table-ok.png"
+												title="#{msg['commons.salvar']}" />
+										</p:commandLink>
+
+										<p:commandLink update="@form" action="#{crudValor.excluir}">
+											<!-- rendered="#{permissoes.fatura.excluir}" -->
+											<f:setPropertyActionListener value="#{valor}"
+												target="#{crudValor.selecionado}" />
+											<img src="/auth/imagens/table-minus.png"
+												title="#{msg['commons.excluir']}" />
+										</p:commandLink>
+
+									</p:column>
+
+									<p:columnGroup rendered="true" type="footer">
+										<p:row>
+
+											<p:column />
+											<p:column />
+											<p:column />
+											<p:column />
+											<p:column />
+											<p:column footerText="Total: " styleClass="col-currency" />
+											<p:column styleClass="col-currency">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.saldoTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+										</p:row>
+									</p:columnGroup>
+
+								</p:dataTable>
+
+							</h:panelGrid>
+						</fieldset>
+
+						<!-- </h:column>
+
+				<h:column rendered="#{crudConta.selecionado.id>0}"> -->
+
+						<!-- LISTA DOS VALORES DAS FATURAS -->
+						<fieldset>
+							<legend>${msg['conta.ftr']}</legend>
+
+							<!-- BOTÃO ADICIONAR -->
+							<p:commandButton value="#{msg['commons.adicionar']}"
+								update="@form" actionListener="#{crudFatura.adicionar}"
+								rendered="#{crudConta.selecionado.id>0}">
+							</p:commandButton>
+
+							<h:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+								columnClasses="rotulo,none">
+
+								<p:dataTable var="fatura" resizableColumns="true"
+									value="#{crudConta.selecionado.faturas}"
+									emptyMessage="Nenhuma Fatura encontrada."
+									rendered="#{crudConta.selecionado.id>0}">
+
+
+									<p:column headerText="Telefone" styleClass="col-currency">
+
+										<h:selectOneListbox value="#{fatura.telefone}" size="1"
+											rendered="#{crudFatura.selecionado ne fatura }" disabled="true">
+											<f:selectItem itemLabel="" itemValue="" />
+											<!-- <f:selectItems value="#{crudOrgao.telefones}" /> -->
+											<f:selectItems value="#{crudConta.telefones}" />
+										</h:selectOneListbox>
+
+										<h:selectOneListbox value="#{fatura.telefone}" size="1"
+											rendered="#{crudFatura.selecionado eq fatura }" disabled="false">
+											<f:selectItem itemLabel="" itemValue="" />
+											<!-- <f:selectItems value="#{crudOrgao.telefones}" /> -->
+											<f:selectItems value="#{crudConta.telefones}" />
+										</h:selectOneListbox>
+
+									</p:column>
+
+									<p:column headerText="Valor" styleClass="col-currency">
+
+										<h:inputText value="#{fatura.valorFatura}"
+											rendered="#{crudFatura.selecionado eq fatura }" />
+										<h:outputText value="#{fatura.valorFatura}"
+											rendered="#{crudFatura.selecionado ne fatura }" />
+
+									</p:column>
+
+									<p:column headerText="Código de Barras"
+										styleClass="col-esquerdo">
+
+										<h:inputText value="#{fatura.cdBarras}"
+											rendered="#{crudFatura.selecionado eq fatura }" />
+										<h:outputText value="#{fatura.cdBarras}"
+											rendered="#{crudFatura.selecionado ne fatura }" />
+
+									</p:column>
+
+									<!-- Operações EDITAR SALVAR EXCLUIR -->
+									<p:column headerText="" styleClass="col-currency"
+										style="width:36px">
+
+										<p:commandLink update="@form" action="#{crudFatura.editar}"
+											rendered="#{crudFatura.selecionado ne fatura}">
+											<f:setPropertyActionListener value="#{fatura}"
+												target="#{crudFatura.selecionado}" />
+											<img src="/auth/imagens/table-edit.png"
+												title="#{msg['commons.salvar']}" />
+										</p:commandLink>
+
+										<p:commandLink update="@form" action="#{crudFatura.salvar}"
+											rendered="#{crudFatura.selecionado eq fatura}">
+											<f:setPropertyActionListener value="#{fatura}"
+												target="#{crudFatura.selecionado}" />
+											<img src="/auth/imagens/table-ok.png"
+												title="#{msg['commons.salvar']}" />
+										</p:commandLink>
+
+										<p:commandLink update="@form" action="#{crudFatura.excluir}">
+											<!-- rendered="#{permissoes.fatura.excluir}" -->
+											<f:setPropertyActionListener value="#{fatura}"
+												target="#{crudFatura.selecionado}" />
+											<img src="/auth/imagens/table-minus.png"
+												title="#{msg['commons.excluir']}" />
+										</p:commandLink>
+
+									</p:column>
+
+									<p:columnGroup rendered="true" type="footer">
+										<p:row>
+											<p:column footerText="Total: " styleClass="col-currency" />
+											<p:column styleClass="col-currency">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.valorTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column styleClass="col-currency" style="color:green;"
+												rendered="#{crudConta.verificaTotal eq 'Total Confere' }">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.verificaTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column styleClass="col-currency" style="color:red;"
+												rendered="#{crudConta.verificaTotal ne 'Total Confere' }">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.verificaTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column />
+										</p:row>
+									</p:columnGroup>
+
+
+								</p:dataTable>
+
+							</h:panelGrid>
+						</fieldset>
+						<br />
+						<br />
+						<br />
+						<p:panel id="toggleable" header="Upload" toggleable="true"
+							toggleSpeed="500" closeSpeed="500" widgetVar="panel"
+							style="margin-bottom:20px" collapsed="true">
+							<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+								columnClasses="rotulo,none">
+
+								<h:outputLabel value="#{msg['imagem.nome']}" />
+								<p:inputText value="#{crudConta.nomeArquivo}" id="nomeArquivo">
+									<p:ajax event="change" listener="#{crudConta.nomeArquivo}" />
+								</p:inputText>
+
+							</p:panelGrid>
+
+							<p:fileUpload id="file-upload" auto="true"
+								fileUploadListener="#{crudConta.upload}" mode="advanced"
+								dragDropSupport="true" fileLimit="1" multiple="false"
+								allowTypes="/(\.|\/)(pdf)$/" label="Selecionar arquivo"
+								uploadLabel="Enviar" cancelLabel="Cancelar" accept="pdf"
+								update="@form" />
+							<p:ajax event="close" listener="#{crudConta.onClose}" />
+
+						</p:panel>
+
+						<p:dataTable id="table-medicoes"
+							value="#{crudConta.selecionado.imagens}" var="imagem"
+							styleClass="lista-admin" rowClasses="odd, zebra">
+
+							<p:column styleClass="col-esquerdo"
+								headerText="#{msg['conta.telefone']}">
+								<h:outputText value="#{imagem.nome}" />
+							</p:column>
+
+							<p:column styleClass="col-direito"
+								headerText="#{msg['imagem.tamanho']}">
+								<h:outputText value="#{imagem.tamanho}" />
+							</p:column>
+
+							<p:column styleClass="col-centralizado"
+								headerText="#{msg['imagem.paginas']}">
+								<h:outputText value="#{imagem.paginas}" />
+							</p:column>
+
+							<p:column styleClass="col-centralizado"
+								headerText="#{msg['imagem.download']}">
+								<a href="#{imagem.url}" target="_blanc"><img
+									src="/auth/imagens/icone-32-download.png" /></a>
+							</p:column>
+
+
+							<!-- <p:column styleClass="col-id">
+							<p:commandLink action="#{crudConta.excluir}" update="@form"
+								title="#{msg['commons.excluir'] }"
+								rendered="#{permissoes.conta.editar}">
+								<f:setPropertyActionListener value="#{conta}"
+									target="#{crudConta.selecionado}" />
+								<img src="/auth/imagens/table-edit.png"
+									title="#{msg['commons.editar'] }" />
+							</p:commandLink>
+						</p:column> -->
+
+						</p:dataTable>
+						<br />
+						<br />
+						<br />
+						<fieldset>
+							<legend>PARECER / OBSERVAÇÃO</legend>
+							<h3>
+								<h:outputText value="#{crudConta.selecionado.status.parecer}" />
+							</h3>
+						</fieldset>
+
+					</p:row>
+				</h:column>
+
+			</h:panelGrid>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

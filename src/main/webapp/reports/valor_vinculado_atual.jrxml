@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="76171053-ee0a-4109-bcaf-eae61b407ac2">
+	<property name="ireport.zoom" value="1.2100000000000026"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="467"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="522"/>
+	<queryString>
+		<![CDATA[SELECT to_char(mesano, 'MM/yyyy'::text) AS ano_vinculado,
+       numero_dotacao  ,
+       sum(total_of_dotacao_vinculado + total_tes_dotacao_vinculado) AS valor_vinculado
+  FROM bdgestel.resumo
+group by mesano,numero_dotacao
+ORDER BY mesano,numero_dotacao;]]>
+	</queryString>
+	<field name="ano_vinculado" class="java.lang.String"/>
+	<field name="numero_dotacao" class="java.lang.String"/>
+	<field name="valor_vinculado" class="java.lang.Double"/>
+	<variable name="totalVinculado" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_vinculado}]]></variableExpression>
+	</variable>
+	<variable name="subtotalVinculado" class="java.lang.Double" resetType="Group" resetGroup="SubtotalVinculado" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_vinculado}]]></variableExpression>
+	</variable>
+	<group name="SubtotalVinculado">
+		<groupExpression><![CDATA[$F{numero_dotacao}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement mode="Opaque" x="143" y="0" width="89" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="4cfac5da-2e36-431e-a759-1a4b37e896be"/>
+					<textElement>
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Mês/Ano]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="232" y="0" width="100" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="c9a48a87-c841-4feb-80ec-69524211f6da"/>
+					<textElement>
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Dotação]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="332" y="0" width="174" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="2244e1bd-3e41-4499-9792-db1d4d08dcd9"/>
+					<textElement>
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Valor Vinculado]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="41">
+				<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement mode="Opaque" x="332" y="0" width="174" height="19" backcolor="#E6E6E6" uuid="62779442-a9d1-4c6a-930c-3ed770af5abe"/>
+					<textFieldExpression><![CDATA[$V{subtotalVinculado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="143" y="0" width="189" height="19" forecolor="#006699" backcolor="#E6E6E6" uuid="d15ea717-acdb-4161-b6c5-ff8aee50ecac"/>
+					<textElement>
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Valor Vinculado Atual]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false" onErrorType="Blank">
+				<reportElement key="image-1" mode="Opaque" x="10" y="7" width="128" height="40" forecolor="#000000" backcolor="#FFFFFF" uuid="4d6261ea-13e2-4ef6-a136-ee5babe7a86c"/>
+				<graphicElement fill="Solid"/>
+				<imageExpression><![CDATA[new java.net.URL("http://seinfrasin/auth/imagens/logo_ce_1.jpg")]]></imageExpression>
+			</image>
+			<textField evaluationTime="Page" pattern="#,##0;-#,##0" isBlankWhenNull="false">
+				<reportElement key="textField-2" mode="Opaque" x="487" y="35" width="47" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="3e578794-55fd-4782-a129-3d1f8e54099b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="144" y="32" width="236" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="e7043924-360f-4586-b414-1626a191d22e"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Vinculado Atual]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-3" mode="Opaque" x="410" y="35" width="71" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="6773e604-1d08-4a74-b360-5caecb13aba1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Página:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-2" mode="Opaque" x="410" y="23" width="71" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="f2377c18-4a8b-48f4-b5c6-5ef0108c0822"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Hora:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-1" mode="Opaque" x="410" y="11" width="71" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="be0e6b33-7c49-488c-a64a-578809cdf925"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Data Emissão:]]></text>
+			</staticText>
+			<textField pattern="d/M/yyyy">
+				<reportElement x="487" y="11" width="64" height="13" uuid="2b5a2bf5-870f-45f9-885f-aa3d68077cb9"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH.mm">
+				<reportElement x="487" y="23" width="35" height="13" uuid="b7bf99fd-bd8d-46ff-8916-f108c41048f8"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="144" y="7" width="236" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="ed1579bd-e9a8-4062-ac39-c42cffd77817"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RELATÓRIO DE VINCULAÇÃO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="143" y="20" width="363" height="1" forecolor="#666666" uuid="7f22f915-140a-4c7f-bfce-b6042eb1333f"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="143" y="19" width="363" height="1" uuid="4845422f-d930-427f-ab8d-98e05a878a80"/>
+			</line>
+			<textField>
+				<reportElement x="146" y="0" width="86" height="19" uuid="34b168ba-2d33-4461-a5d1-3c2c4ccc74a4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0e0f026d-0fb4-4674-bb9b-89e6f52ddbb4"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ano_vinculado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="232" y="0" width="100" height="19" uuid="e04365e6-9ffa-4333-ab38-b58f3156ca8d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0cb2adc0-9711-432f-9db7-7ef84b0dca0a"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{numero_dotacao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="332" y="0" width="174" height="19" uuid="e175b56e-36b0-4255-8972-a0225cc93b94">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5731bcc1-370d-40ff-89ad-c6352ce801f6"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{valor_vinculado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<summary>
+		<band height="36"/>
+	</summary>
+</jasperReport>

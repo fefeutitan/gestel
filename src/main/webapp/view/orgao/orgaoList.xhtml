@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['orgao.title']}</ui:define>
+		<ui:define name="operacao">${msg['commons.listar']}</ui:define>
+<!-- #{permissoes.orgao.criar} -->
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudOrgao}"
+				filtrar="#{permissoes.orgao.ver}" novo="false" 
+				cancelar="true" ajax="false" analise="false" enviar="false" />
+		</ui:define>
+
+		<ui:define name="body">
+
+			<p:panelGrid styleClass="tab-edita" cellspacing="0">
+
+				<p:row>
+					<p:column styleClass="width-50">
+						<fieldset style="height: 100px;">
+							<legend>${msg['orgao.title']}</legend>
+							<h:panelGrid columns="2" styleClass="tab-edita" cellspacing="5"
+								columnClasses="rotulo-small,none">
+								<seinfra:inputText id="in-orgao"
+									value="#{crudOrgao.selecionado.nome}"
+									label="#{msg['orgao.nome']}" />
+								<seinfra:inputText id="in-sigla"
+									value="#{crudOrgao.selecionado.sigla}"
+									label="#{msg['orgao.sigla']}" />
+							</h:panelGrid>
+						</fieldset>
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+			<br />
+			<p:dataTable id="table-medicoes" value="#{crudOrgao.selecionados}"
+				var="orgao" styleClass="lista-admin"
+				rendered="#{!empty crudOrgao.selecionados}" rowClasses="odd, zebra"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+<!-- 
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['orgao.nome']}">
+					<h:outputText value="#{orgao.id}" />
+				</p:column>
+ -->
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['orgao.nome']}">
+					<h:outputText value="#{orgao.nome}" />
+				</p:column>
+
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['orgao.sigla']}">
+					<h:outputText value="#{orgao.sigla}" />
+				</p:column>
+
+
+				<p:column styleClass="col-id">
+					<p:commandLink action="#{crudOrgao.editar}" update="@form"
+						title="#{msg['commons.alterar'] }"
+						rendered="#{permissoes.orgao.editar}">
+						<f:setPropertyActionListener value="#{orgao}"
+							target="#{crudOrgao.selecionado}" />
+						<img src="/auth/imagens/table-edit.png"
+							title="#{msg['commons.editar'] }" />
+					</p:commandLink>
+				</p:column>
+
+			</p:dataTable>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

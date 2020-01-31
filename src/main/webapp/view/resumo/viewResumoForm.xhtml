@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['commons.analise.fatura']}</ui:define>
+		<ui:define name="operacao">${msg['commons.conferencia']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{viewResumoBean}" filtrar="true"
+				enviar="false" analise="false" />
+		</ui:define>
+		<ui:define name="body">
+
+			<fieldset>
+				<legend>${msg['orgao.title']}</legend>
+
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+					columnClasses="rotulo,none">
+					<h:outputLabel value="#{msg['orgao.title']}:" />
+					<h:selectOneListbox id="in-medicao-data"
+						value="#{viewResumoBean.orgao}" size="1">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{viewResumoBean.orgaos}" />
+					</h:selectOneListbox>
+					<seinfra:inputDate id="datainput" label="#{msg['resumo.mesano']}:"
+						value="#{viewResumoBean.mesAno}" showCalendar="false"
+						pattern="MM/yyyy" mask="99/9999" />
+
+				</p:panelGrid>
+			</fieldset>
+
+			<br />
+			<br />
+
+			<fieldset>
+				<legend>Valores do Mês</legend>
+
+				<p:dataGrid columns="2" var="projeto"
+					value="#{viewResumoBean.projetos}" layout="grid">
+					
+					<p:panel header="#{projeto.numero}"
+						rendered="#{not empty projeto.dotacoes}">
+
+						<p:dataTable var="dotacao" value="#{projeto.dotacoes}"
+							sortBy="#{d.numeroDotacao}">
+
+							<p:column headerText="Dotação" styleClass="col-currency">
+								<h:outputText value="#{dotacao.numeroDotacao}" />
+							</p:column>
+
+							<p:column headerText="Tesouro" styleClass="col-currency">
+								<h:outputText value="#{dotacao.totalTesouroDotacaoMes}" />
+							</p:column>
+
+							<p:column headerText="Outras Fontes" styleClass="col-currency">
+								<h:outputText value="#{dotacao.totalOutrasFontesDotacaoMes}" />
+							</p:column>
+
+							<p:column headerText="Total" styleClass="col-currency">
+								<h:outputText
+									value="#{dotacao.totalTesouroDotacaoMes+dotacao.totalOutrasFontesDotacaoMes}" />
+							</p:column>
+
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column footerText="Fatura mês :"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-green" />
+									<p:column footerText="#{projeto.valorMesTesouro}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-green" />
+									<p:column footerText="#{projeto.valorMesOutraFonte}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-green" />
+									<p:column
+										footerText="#{projeto.valorMesTesouro+projeto.valorMesOutraFonte}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-green" />
+									<p:column footerText="" style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+								</p:row>
+								<p:row>
+									<p:column footerText="Valor vinculado :"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-red" />
+									<p:column footerText="#{projeto.somaValorVinculadoTesouro}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-red" />
+									<p:column footerText="#{projeto.somaValorVinculadoOutraFonte}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-red" />
+									<p:column
+										footerText="#{projeto.somaValorVinculadoTesouro+projeto.somaValorVinculadoOutraFonte}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-red" />
+									<p:column footerText="" style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+								</p:row>
+								<!-- <p:row>
+									<p:column footerText="Valor total :"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+									<p:column footerText="#{projeto.totalVinculadoMesTesouro}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+									<p:column footerText="#{projeto.totalVinculadoMesOutrasFontes}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+									<p:column
+										footerText="#{projeto.totalVinculadoMesTesouro+projeto.totalVinculadoMesOutrasFontes}"
+										style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+									<p:column footerText="" style="border:0;text-align:right"
+										styleClass="col-currency back-black" />
+								</p:row> -->
+
+							</p:columnGroup>
+							<p:column>
+								<p:commandLink update="@form"
+									action="#{viewResumoBean.vincular}"
+									rendered="#{dotacao.vinculado eq false}">
+									<f:setPropertyActionListener value="#{dotacao}"
+										target="#{viewResumoBean.dotacao}" />
+									<f:setPropertyActionListener value="#{projeto}"
+										target="#{viewResumoBean.pf}" />
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.vincular']}" />
+								</p:commandLink>
+
+							</p:column>
+
+						</p:dataTable>
+
+
+						<p:panelGrid columns="3"
+							columnClasses="rotulo-medium, col-currency, col-currency"
+							rendered="false">
+							<h:outputText value="Dotações:" />
+
+							<c:forEach var="dotacao" items="#{projeto.dotacoes}">
+								<p:column styleClass="rotulo-nosize col-currency">
+									<h:outputText value="#{dotacao.numeroDotacao}" />
+								</p:column>
+
+							</c:forEach>
+						</p:panelGrid>
+
+						<p:panelGrid columns="3"
+							columnClasses="rotulo-medium, col-currency, col-currency"
+							rendered="false">
+							<h:outputText value="Tesouro:" />
+							<h:outputText value="R$ 0,00" />
+							<h:outputText value="R$ 0,00" />
+
+							<h:outputText value="Outras fontes:" />
+							<h:outputText value="R$ 0,00" />
+							<h:outputText value="R$ 0,00" />
+						</p:panelGrid>
+					</p:panel>
+				</p:dataGrid>
+			</fieldset>
+
+
+
+			<br />
+			<br />
+
+			<fieldset>
+				<legend>Resumo Geral</legend>
+
+				<p:dataTable var="pf" value="#{viewResumoBean.projetos}">
+
+					<!--  -->
+					<p:subTable var="dotacao" value="#{pf.dotacoes}"
+						rendered="#{not empty pf.dotacoes}">
+
+						<f:facet name="header">
+							<h:outputText value="#{pf.numero}" />
+						</f:facet>
+
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Projeto / Dotação" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="Valor Previsto (A)" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="Valor Vinculado (B)" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="Saldo (A-B)" style="color:red;" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="MÊS SELECIONADO (C)" style="color:black;" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="Total (B+C)" />
+								<p:column colspan="2" styleClass="multicolumnrows"
+									headerText="Saldo (A-B+C)" style="color:red;" />
+
+							</p:row>
+							<p:row>
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+								<p:column headerText="Tesouro" />
+								<p:column headerText="Outras Fontes" />
+
+							</p:row>
+						</p:columnGroup>
+
+
+						<p:column>
+							<h:outputText value="#{dotacao.numeroDotacao}" />
+						</p:column>
+
+						<!--VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -   -->
+						<!--VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -   -->
+						<!--VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -VALOR PREVISTO -   -->
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.somaTesoutoDotacaoPrevisto}"
+								styleClass="amarelo" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.somaOutrasFontesDotacaoPrevisto}" />
+						</p:column>
+
+						<!--VALOR VINCULADO -VALOR VINCULADO -VALOR VINCULADO -VALOR VINCULADO -   -->
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.valorTesouroVinculado}" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.valorOutrasFontesVinculado}" />
+						</p:column>
+
+						<!--SALDO PREVISTO- VINCULADO -SALDO PREVISTO- VINCULADO - SALDO PREVISTO- VINCULADO   -->
+						<!--SALDO PREVISTO- VINCULADO -SALDO PREVISTO- VINCULADO - SALDO PREVISTO- VINCULADO   -->
+						<!--SALDO PREVISTO- VINCULADO -SALDO PREVISTO- VINCULADO - SALDO PREVISTO- VINCULADO   -->
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.somaTesoutoDotacaoPrevisto-dotacao.valorTesouroVinculado}"
+								styleClass="rejeitada" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.somaOutrasFontesDotacaoPrevisto-dotacao.valorOutrasFontesVinculado}" />
+						</p:column>
+
+						<!--VALOR MES  VALOR MES VALOR MES VALOR MES VALOR MES VALOR MES -->
+						<!--VALOR MES  VALOR MES VALOR MES VALOR MES VALOR MES VALOR MES -->
+						<!--VALOR MES  VALOR MES VALOR MES VALOR MES VALOR MES VALOR MES -->
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.totalTesouroDotacaoMes}" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText value="#{dotacao.totalOutrasFontesDotacaoMes}" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.valorTesouroVinculado+dotacao.totalTesouroDotacaoMes}" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.valorOutrasFontesVinculado+dotacao.totalOutrasFontesDotacaoMes}" />
+						</p:column>
+
+
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.somaTesoutoDotacaoPrevisto -(dotacao.valorTesouroVinculado+dotacao.totalTesouroDotacaoMes)}" />
+						</p:column>
+
+						<p:column style="text-align:right">
+							<h:outputText
+								value="#{dotacao.somaOutrasFontesDotacaoPrevisto- (dotacao.valorOutrasFontesVinculado+dotacao.totalOutrasFontesDotacaoMes)}" />
+						</p:column>
+
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column footerText="Totais: "
+									style="border:0;text-align:right" />
+								<p:column footerText="#{pf.somaValorPrevistoTesouro}"
+									style="border:0;text-align:right" />
+								<p:column footerText="#{pf.somaValorPrevistoOutraFonte}"
+									style="border:0;" styleClass="col-currency" />
+								<p:column footerText="#{pf.somaValorVinculadoTesouro}"
+									style="border:0;" styleClass="col-currency" />
+								<p:column footerText="#{pf.somaValorVinculadoOutraFonte}"
+									style="border:0;" styleClass="col-currency" />
+								<p:column footerText="#{pf.saldoPrevistoVinculadoTesouro}"
+									style="border:0;" styleClass="col-currency back-black" />
+								<p:column footerText="#{pf.saldoPrevistoVinculadoOutraFonte}"
+									style="border:0;" styleClass="col-currency back-black" />
+								<p:column footerText="#{pf.valorMesTesouro}" style="border:0;"
+									styleClass="col-currency back-green" />
+								<p:column footerText="#{pf.valorMesOutraFonte}"
+									style="border:0;" styleClass="col-currency back-green" />
+								<p:column footerText="#{pf.totalVinculadoMesTesouro}"
+									style="border:0;" styleClass="col-currency back-black" />
+								<p:column footerText="#{pf.totalVinculadoMesOutrasFontes}"
+									style="border:0;" styleClass="col-currency back-black" />
+								<p:column footerText="#{pf.saldoTesouro}" style="border:0;"
+									styleClass="col-currency back-black" />
+								<p:column footerText="#{pf.saldoOutraFonte}" style="border:0;"
+									styleClass="col-currency back-black" />
+							</p:row>
+						</p:columnGroup>
+					</p:subTable>
+				</p:dataTable>
+			</fieldset>
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

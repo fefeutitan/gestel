@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['commons.analise.fatura']}</ui:define>
+		<ui:define name="operacao">${msg['commons.conferencia']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudAnalise}" cancelar="true"
+				analise="false" filtrar="false" enviar="false"
+				bloquear="#{not crudAnalise.selecionado.isBloqueado() and not crudAnalise.selecionado.isAprovado()}"
+				desbloquear="#{crudAnalise.selecionado.isBloqueado() and not crudAnalise.selecionado.isAprovado()}"
+				aprovar="#{crudAnalise.selecionado.isBloqueado()}" parecer="true" />
+		</ui:define>
+		<ui:define name="body">
+
+			<fieldset>
+				<legend>${msg['orgao.title']}</legend>
+
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+					columnClasses="rotulo,none">
+					<seinfra:outputText id="out-orgao-nome"
+						value="#{crudAnalise.selecionado.orgao.nome}"
+						label="#{msg['orgao.title']}" />
+					<seinfra:outputText id="out-orgao-sigla"
+						value="#{crudAnalise.selecionado.orgao.sigla}"
+						label="#{msg['orgao.sigla']}" />
+
+					<seinfra:outputDate id="dataMesRefnput"
+						label="#{msg['conta.mes.ano']}"
+						value="#{crudAnalise.selecionado.mesAno}" showCalendar="false"
+						pattern="MM/yyyy" mask="99/9999" timeZone="America/Fortaleza"
+						style="font-size: 12px;color: blue;font-weight: bold;" />
+
+					<seinfra:outputText id="out-conta-status"
+						value="#{crudAnalise.selecionado.status.status.nome}"
+						label="#{msg['conta.status']}"
+						style="font-size: 15px;color: green;" />
+
+				</p:panelGrid>
+
+				<fieldset>
+					<legend>${msg['commons.resumo.pf.dotacao.ano']}</legend>
+
+					<p:dataTable id="table-valores-ano"
+						value="#{crudAnalise.listarResumosAno}" var="resumo"
+						styleClass="lista-admin" rowClasses="odd, zebra"
+						emptyMessage="Nenhum registro encontrado!">
+
+						<p:column styleClass="col-centralizado"
+							headerText="#{msg['conta.pf']}">
+							<h:outputText value="#{resumo.projeto.numero}" />
+						</p:column>
+
+						<p:column styleClass="col-centralizado"
+							headerText="#{msg['conta.dotacao']}">
+							<h:outputText value="#{resumo.dotacao.numero}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.vlr.previsto.tesouro']}">
+							<h:outputText value="#{resumo.valorTesouro}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.vlr.executado.tesouro']}"
+							style="color:red;">
+							<h:outputText value="#{resumo.valorTesouroExe}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.saldo']}" style="color:black;">
+							<h:outputText
+								value="#{resumo.valorTesouro-resumo.valorTesouroExe}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.vlr.previsto.outra.fonte']}">
+							<h:outputText value="#{resumo.valorOutrasFontes}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.vlr.executado.outra.fonte']}"
+							style="color:red;">
+							<h:outputText value="#{resumo.valorOutrasFontesExe}" />
+						</p:column>
+
+						<p:column styleClass="col-currency"
+							headerText="#{msg['conta.saldo']}" style="color:black;">
+							<h:outputText
+								value="#{resumo.valorOutrasFontes-resumo.valorOutrasFontesExe}" />
+						</p:column>
+
+					</p:dataTable>
+				</fieldset>
+			</fieldset>
+			<br />
+			<br />
+
+
+			<fieldset>
+				<legend>${msg['conta.vlr']}</legend>
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="4"
+					columnClasses="rotulo,none,rotulo,none,rotulo,none,rotulo,none">
+
+					<p:dataTable var="valor" resizableColumns="true"
+						value="#{crudAnalise.selecionado.valores}"
+						emptyMessage="Nenhum valor encontrado.">
+
+						<p:column headerText="Mês Referência" styleClass="col-currency">
+
+							<h:outputText type="date" value="#{valor.mesReferencia}"
+								showCalendar="false" pattern="MM/yyyy" mask="99/9999"
+								timeZone="America/Fortaleza" style="width: 100px;" />
+
+						</p:column>
+						<p:column headerText="Projeto" styleClass="col-currency">
+
+							<h:outputText value="#{valor.pf.numero}"
+								styleClass="col-currency" style="width: 100px;" />
+
+						</p:column>
+						<p:column headerText="Dotação" styleClass="col-currency">
+
+							<h:outputText value="#{valor.dotacao.numero}"
+								styleClass="col-currency" style="width: 100px;" />
+
+						</p:column>
+						<p:column headerText="Tesouro" styleClass="col-currency">
+
+							<h:outputText value="#{valor.valorTesouro}"
+								styleClass="col-currency" style="width: 100px;" />
+
+						</p:column>
+						<p:column headerText="Outra Fonte" styleClass="col-currency">
+
+							<h:outputText value="#{valor.valorOutraFonte}"
+								styleClass="col-currency" style="width: 100px;" />
+
+						</p:column>
+
+						<p:columnGroup rendered="true" type="footer">
+							<p:row>
+
+								<p:column />
+								<p:column />
+								<p:column />
+								<p:column footerText="Total: " styleClass="col-currency" />
+								<p:column styleClass="col-currency">
+									<f:facet name="footer">
+										<h:outputText value="#{crudAnalise.saldoTotal}">
+										</h:outputText>
+									</f:facet>
+								</p:column>
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+				</p:panelGrid>
+			</fieldset>
+			<br />
+			<br />
+			<div align="center" style="width: 800px; margin: 0 auto;">
+				<fieldset>
+					<legend>${msg['conta.anexo']}</legend>
+					<p:dataTable id="table-imagens"
+						value="#{crudAnalise.selecionado.imagens}" var="imagem"
+						styleClass="lista-admin" rowClasses="odd, zebra"
+						emptyMessage="Nenhum registro encontrado!">
+
+						<p:column styleClass="col-centralizado"
+							headerText="#{msg['imagem.download']}">
+							<a href="#{imagem.url}"><img
+								src="/auth/imagens/icone-32-download.png" width="20" height="20" /></a>
+						</p:column>
+
+						<p:column styleClass="col-esquerdo"
+							headerText="#{msg['imagem.nome']}">
+							<h:outputText value="#{imagem.nome}" />
+						</p:column>
+
+						<p:column styleClass="col-direito"
+							headerText="#{msg['imagem.tamanho']}">
+							<h:outputText value="#{imagem.tamanho}" />
+						</p:column>
+
+						<p:column styleClass="col-centralizado"
+							headerText="#{msg['imagem.paginas']}">
+							<h:outputText value="#{imagem.paginas}" />
+						</p:column>
+					</p:dataTable>
+				</fieldset>
+			</div>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

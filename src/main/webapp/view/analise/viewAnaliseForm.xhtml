@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['commons.analise.fatura']}</ui:define>
+		<ui:define name="operacao">${msg['commons.conferencia']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudAnalise}" cancelar="true"
+				analise="false" filtrar="true" enviar="false" />
+		</ui:define>
+		<ui:define name="body">
+
+			<!-- <p:panelGrid styleClass="tab-edita" cellspacing="0">
+
+				<p:row>
+					<p:column styleClass="width-50">
+						<fieldset style="height: 100px;">
+							<legend>${msg['conta.status']}</legend>
+							<h:panelGrid columns="2" styleClass="tab-edita" cellspacing="5"
+								columnClasses="rotulo-small,none">
+								<seinfra:inputText id="in-status"
+									value="#{crudConta.selecionado.status}"
+									label="#{msg['conta.status']}" />
+							</h:panelGrid>
+						</fieldset>
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+			<br /> -->
+			<fieldset>
+				<legend>${msg['conta.title']}</legend>
+
+				<p:dataTable id="table-faturas" value="#{crudAnalise.selecionados}"
+					var="conta" styleClass="lista-admin" rowClasses="odd, zebra"
+					emptyMessage="Nenhum registro encontrado!" rows="10"
+					paginator="true" sortBy="#{conta.id}" sortOrder="descending"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15">>
+
+					<p:column styleClass="col-esquerdo"
+						headerText="#{msg['orgao.title']}">
+						<h:outputText value="#{conta.orgao.nome}" />
+					</p:column>
+
+					<p:column styleClass="col-centralizado"
+						headerText="#{msg['conta.codigo']}">
+						<h:outputText value="#{conta.id}" />
+					</p:column>
+
+					<p:column styleClass="col-centralizado"
+						headerText="#{msg['conta.mes.ano']}">
+						<seinfra:outputDate id="outdataMesRefnput" label=""
+							value="#{conta.mesAno}" showCalendar="false" pattern="MM/yyyy"
+							mask="99/9999" timeZone="America/Fortaleza" rendered="true" />
+					</p:column>
+
+					<p:column styleClass="col-centralizado"
+						headerText="#{msg['conta.status']}">
+						<h:outputText value="#{conta.status.status.nome}" />
+					</p:column>
+
+					<p:column styleClass="col-centralizado"
+						headerText="#{msg['conta.analisador']}">
+						<h:outputText value="#{conta.usuario.nome}" />
+					</p:column>
+
+
+					<p:column styleClass="col-id">
+						<p:commandLink action="#{crudConta.analisar}" update="@form"
+							title="#{msg['commons.visualizar'] }"
+							rendered="#{not conta.isBloqueado()}">
+							<f:setPropertyActionListener value="#{conta}"
+								target="#{crudAnalise.selecionado}" />
+							<img src="/auth/imagens/table-view.png"
+								title="#{msg['commons.visualizar'] }" />
+						</p:commandLink>
+
+						<p:commandLink action="#{crudConta.analisar}" update="@form"
+							title="#{msg['commons.visualizar'] }"
+							rendered="#{conta.isBloqueado()}">
+							<f:setPropertyActionListener value="#{conta}"
+								target="#{crudAnalise.selecionado}" />
+							<img src="/auth/imagens/icone-32-lock.png"
+								title="#{msg['commons.visualizar'] }" />
+						</p:commandLink>
+
+
+					</p:column>
+
+				</p:dataTable>
+
+			</fieldset>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

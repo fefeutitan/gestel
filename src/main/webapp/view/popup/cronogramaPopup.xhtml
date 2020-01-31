@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core" xmlns:p="http://primefaces.org/ui" xml:lang="pt" xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets" lang="pt-br" dir="ltr">
+
+<f:view>
+<ui:composition template="/templates/popup.xhtml">
+
+	<ui:param name="width" value="850" />
+	<ui:param name="height" value="550" />
+	<ui:param name="title" value="#{msg['cronograma.title']} - #{crudCronograma.planejamento.numero}&deg; #{msg['planejamento.title']}" />
+
+	<ui:define name="bodyPopUp">
+        <h1>
+            <f:subview id="tarefa-title" rendered="#{not empty crudCronograma.tarefaSelecionada}">
+                <p:commandLink update="@form" title="#{msg['commons.anterior']}" actionListener="#{crudCronograma.anterior}">
+                    <img src="/auth/imagens/left.png" title="#{msg['commons.anterior'] }" style="vertical-align: middle; margin-right: 5px;"/>
+                </p:commandLink>
+                <h:outputText value="#{crudCronograma.tarefaSelecionada.title}"/>
+            </f:subview>
+            <h:outputText value="#{crudCronograma.planejamento.numero}&deg; Planejamento" rendered="#{empty crudCronograma.tarefaSelecionada}"/>
+        </h1>
+        
+        <p:dataTable id="table-cronograma-subetapas" value="#{crudCronograma.tarefas}" var="tarefa" styleClass="lista-admin">
+            <p:column headerText="#{msg['tarefa.numero']}" styleClass="col-checkbox col-esquerdo">
+                <seinfra:outputText id="tarefa-numero" value="#{tarefa.numeroCompleto}" />
+            </p:column>
+            <p:column headerText="#{msg['tarefa.nome']}" styleClass="col-esquerdo">
+                <seinfra:outputText id="tarefa-nome" value="#{tarefa.nome}" />
+            </p:column>
+            
+            <p:columns value="#{crudCronograma.meses}" var="mesano" styleClass="col-checkbox">
+                <f:facet name="header"><h:outputText value="#{mesano}" /></f:facet>
+                <c:set var="prazo" value="#{tarefa.getPrazo(mesano)}" />
+                <c:set var="lacrado" value="#{crudCronograma.planejamento.isCronogramaLacrado(mesano) or not prazo.cronogramaValido}" />
+                <c:set var="grupo" value="#{not empty tarefa.subetapas}" />
+                
+                <seinfra:inputText id="input-prazo-tarefa" value="#{prazo.percentual}" style="width: 100%;" styleClass="data" 
+                        readonly="#{not crudCronograma.planejamento.aberto}" rendered="#{not empty prazo and not lacrado and not grupo}" />
+                
+                <h:outputText value="#{prazo.percentualCalculado}" rendered="#{not lacrado and grupo}"/>
+                <h:outputText value="#{prazo.percentualMedido}" rendered="#{lacrado and prazo.percentualMedido gt 0}"/>
+            </p:columns>
+            
+            <p:column styleClass="col-id">
+                <p:commandLink update="@form" title="#{msg['commons.editar']}" actionListener="#{crudCronograma.editarTarefa(tarefa)}" rendered="#{not empty tarefa.subetapas}">
+                    <img src="/auth/imagens/table-edit.png" title="#{msg['commons.editar'] }" />
+                </p:commandLink>
+            </p:column>
+            
+        </p:dataTable>
+        <br/>
+        <h:panelGrid styleClass="tab-edita" columnClasses="width-50 col-direito,col-esquerdo" columns="2">
+            <p:commandButton id="button-salvar" actionListener="#{crudCronograma.salvar}" value="#{msg['commons.salvar']}" update="@form" style="width: 60px;" oncomplete="PrimeFaces.widgets.widget_#{id}.hide();"/>
+            <p:commandButton id="button-cancelar" actionListener="#{crudCronograma.cancelar}" value="#{msg['commons.cancelar']}" style="width: 60px;" oncomplete="PrimeFaces.widgets.widget_#{id}.hide();"/>
+        </h:panelGrid>
+        
+	</ui:define>
+</ui:composition>
+</f:view>
+
+</html>

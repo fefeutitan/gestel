@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['conta.title']}</ui:define>
+		<ui:define name="operacao">${msg['commons.listar']}</ui:define>
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudConta}"
+				filtrar="#{permissoes.conta.ver}" novo="#{permissoes.conta.criar}"
+				cancelar="true" ajax="false" enviar="false" analise="false" />
+		</ui:define>
+
+		<ui:define name="body">
+
+			<p:dataTable id="table-faturas" value="#{crudConta.selecionados}"
+				var="conta" styleClass="lista-admin"
+				rendered="#{!empty crudConta.selecionados}" rowClasses="odd, zebra"
+				rows="10" paginator="true" sortBy="#{conta.id}"
+				sortOrder="descending"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">>
+
+				<p:column styleClass="col-centralizado"
+					headerText="#{msg['conta.codigo']}">
+					<h:outputText value="#{conta.id}" />
+				</p:column>
+
+				<p:column styleClass="col-centralizado"
+					headerText="#{msg['conta.mes.ano']}">
+					<seinfra:outputDate id="outdataMesRefnput" label=""
+						value="#{conta.mesAno}" showCalendar="false" pattern="MM/yyyy"
+						mask="99/9999" timeZone="America/Fortaleza" rendered="true" />
+				</p:column>
+
+				<!-- <p:column styleClass="col-currency"
+					headerText="#{msg['conta.vlr.outra.Fonte']}">
+					<h:outputText value="#{valor.valorOutraFonte}" />
+				</p:column> -->
+
+				<p:column styleClass="col-centralizado"
+					headerText="#{msg['conta.status']}">
+					<h:outputText value="#{conta.status.status.nome}" />
+				</p:column>
+
+				<p:column styleClass="col-id">
+					<p:commandLink action="#{crudConta.visualizarDados}" update="@form"
+						title="#{msg['commons.visualizar'] }"
+						rendered="#{not conta.isEditavel()}">
+						<f:setPropertyActionListener value="#{conta}"
+							target="#{crudConta.selecionado}" />
+						<img src="/auth/imagens/table-find.png"
+							title="#{msg['commons.visualizar'] }" />
+					</p:commandLink>
+
+					<p:commandLink action="#{crudConta.editar(conta)}" update="@form"
+						title="#{msg['commons.alterar'] }"
+						rendered="#{conta.isEditavel()}">
+						<img src="/auth/imagens/table-edit.png"
+							title="#{msg['commons.editar'] }" />
+					</p:commandLink>
+
+
+				</p:column>
+
+
+
+			</p:dataTable>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

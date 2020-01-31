@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+                <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog id="#{id}" header="#{title}" width="#{width}" height="#{height}" modal="true" onShow="javascript:focarInput#{id}();">
+        
+        <h:form id="popupForm_#{id}">
+            <div style="overflow: auto;">
+                <ui:insert name="bodyPopUp" />
+            </div>
+        </h:form>
+        
+        <script language="javascript">
+
+        function focarInput#{id}() {
+
+			var componentes = document.getElementById("popupForm_#{id}").getElementsByTagName("input");
+			for (var i = 0; i &lt; componentes.length; i++) {
+			    var input = componentes[i];
+			    if (input.type &amp;&amp; input.type == "text") {
+			        input.focus();
+			        if (input.setSelectionRange) {
+			        	input.setSelectionRange(0, input.value.length);
+                    } else if (input.createTextRange) {
+                        var range = input.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', 0);
+                        range.moveStart('character', input.value.length);
+                        range.select();
+                    }
+			        
+			        break;
+			    }
+			}
+        }
+
+        </script>
+    
+    </p:dialog>
+
+</ui:composition>

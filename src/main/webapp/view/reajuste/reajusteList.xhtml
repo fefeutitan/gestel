@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['reajuste.title']}</ui:define>
+		<ui:define name="operacao">${msg['commons.listar']}</ui:define>
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudReajuste}" cancelar="true"
+				novo="true" salvar="false" analise="false" filtrar="false"
+				enviar="false" />
+		</ui:define>
+
+		<ui:define name="body">
+
+			<p:panelGrid styleClass="tab-edita" cellspacing="0">
+
+
+			</p:panelGrid>
+			<br />
+			<p:dataTable id="table-medicoes" value="#{crudReajuste.selecionados}"
+				var="reajuste" styleClass="lista-admin"
+				rendered="#{!empty crudReajuste.selecionados}"
+				rowClasses="odd, zebra" rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['conta.dotacao']}">
+					<h:selectOneListbox value="#{reajuste.dotacao}" size="1"
+						style="width: 150px;" rendered="true" disabled="true">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{crudReajuste.dotacoes}" />
+					</h:selectOneListbox>
+				</p:column>
+
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['reajuste.ano']}">
+					<h:outputText value="#{reajuste.ano}" />
+				</p:column>
+
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['reajuste.VROF']}">
+					<h:outputText value="#{reajuste.valorReajusteOutraFonte}" />
+				</p:column>
+
+				<p:column styleClass="col-esquerdo"
+					headerText="#{msg['reajuste.VT']}">
+					<h:outputText value="#{reajuste.valorReajusteTesouro}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

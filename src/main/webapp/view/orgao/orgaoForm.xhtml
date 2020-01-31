@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['orgao.title']}</ui:define>
+		<ui:define name="operacao">${msg[crudOrgao.selecionado.id gt 0 ? 'commons.alterar' : 'commons.criar']}</ui:define>
+
+		<!-- #{permissoes.orgao.criar} -->
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudOrgao}" cancelar="true"
+				novo="false" salvar="#{permissoes.orgao.editar}" analise="false"
+				enviar="false" />
+		</ui:define>
+
+		<ui:define name="body">
+
+			<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+				columnClasses="rotulo,none">
+				<seinfra:outputText id="out-orgao-nome"
+					value="#{crudConta.usuario.unidadeAdministrativa.nome}"
+					label="#{msg['orgao.title']}" />
+				<seinfra:outputText id="out-orgao-sigla"
+					value="#{crudConta.usuario.unidadeAdministrativa.sigla}"
+					label="#{msg['orgao.sigla']}" />
+			</p:panelGrid>
+
+			<fieldset>
+				<legend>${msg['orgao.title.contatos']}</legend>
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+					columnClasses="rotulo,none">
+					<seinfra:inputText id="out-orgao-pessoa"
+						value="#{crudOrgao.selecionado.pessoaContato}"
+						label="#{msg['orgao.pessoa.contato']}" style="width: 500px;" />
+					<seinfra:inputText id="out-orgao-telefone"
+						value="#{crudOrgao.selecionado.telefoneContato}"
+						label="#{msg['orgao.telefone']}" style="width: 500px;" />
+					<seinfra:inputText id="out-orgao-email"
+						value="#{crudOrgao.selecionado.emailContato}"
+						label="#{msg['orgao.email']}" style="width: 500px;" />
+				</p:panelGrid>
+			</fieldset>
+
+			<br />
+
+			<fieldset>
+				<legend>${msg['commons.dados']}</legend>
+				<p:tabView activeIndex="#{crudOrgao.tabSelecionada}">
+					<p:tab title="Mapp">
+
+						<p:commandButton value="#{msg['commons.adicionar']}"
+							update="@form" actionListener="#{crudMapp.adicionar}">
+							<f:setPropertyActionListener value="0"
+								target="#{crudOrgao.tabSelecionada}" />
+						</p:commandButton>
+
+						<p:dataTable var="mapp" value="#{crudOrgao.selecionado.mapps}"
+							emptyMessage="Nenhum Mapp encontrado.">
+							<p:column headerText="Mapp" styleClass="col-esquerdo">
+								<h:inputText id="mapp" value="#{mapp.numero}" required="true"
+									requiredMessage="O número do Mapp é obrigatório"
+									rendered="#{crudMapp.selecionado eq mapp }" />
+								<h:outputText value="#{mapp.numero}"
+									rendered="#{crudMapp.selecionado ne mapp }" />
+								<p:message style="color:red; font-size:10px;" for="mapp" />
+							</p:column>
+
+							<p:column headerText="Descrição" styleClass="col-esquerdo">
+								<h:inputText id="mappdesc" value="#{mapp.nome}" required="true"
+									requiredMessage="A descrição do Mapp é obrigatória"
+									rendered="#{crudMapp.selecionado eq mapp }" />
+								<h:outputText value="#{mapp.nome}"
+									rendered="#{crudMapp.selecionado ne mapp }" />
+								<p:message style="color:red; font-size:10px;" for="mappdesc" />
+							</p:column>
+
+							<p:column headerText="" styleClass="col-currency"
+								style="width:36px">
+
+								<p:commandLink update="@form" action="#{crudMapp.salvar}"
+									ajax="true" rendered="#{crudMapp.selecionado eq mapp }">
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.salvar']}" />
+								</p:commandLink>
+
+								<p:commandLink update="@form" action="#{crudMapp.editar}"
+									rendered="#{crudMapp.selecionado ne mapp}">
+									<f:setPropertyActionListener value="#{mapp}"
+										target="#{crudMapp.selecionado}" />
+									<img src="/auth/imagens/table-edit.png"
+										title="#{msg['commons.editar']}" />
+								</p:commandLink>
+
+								<p:commandLink action="#{crudMapp.excluir}" update="@form"
+									title="#{msg['commons.alterar'] }"
+									rendered="#{permissoes.mapp.excluir}">
+									<f:setPropertyActionListener value="#{mapp}"
+										target="#{crudMapp.selecionado}" />
+									<img src="/auth/imagens/table-minus.png"
+										title="#{msg['commons.excluir']}" />
+								</p:commandLink>
+
+
+							</p:column>
+						</p:dataTable>
+
+					</p:tab>
+
+					<p:tab title="Ação">
+						<p:commandButton value="#{msg['commons.adicionar']}"
+							update="@form" actionListener="#{crudAcao.adicionar}">
+							<f:setPropertyActionListener value="1"
+								target="#{crudOrgao.tabSelecionada}" />
+						</p:commandButton>
+
+						<p:dataTable var="acao" value="#{crudOrgao.selecionado.acoes}"
+							emptyMessage="Nenhuma Ação encontrada.">
+							<p:column headerText="Ação" styleClass="col-esquerdo">
+								<h:inputText id="acao" value="#{acao.numero}" required="true"
+									requiredMessage="O número da Ação é obrigatório"
+									rendered="#{crudAcao.selecionado eq acao }" />
+								<h:outputText value="#{acao.numero}"
+									rendered="#{crudAcao.selecionado ne acao }" />
+								<p:message style="color:red; font-size:10px;" for="acao" />
+							</p:column>
+
+							<p:column headerText="Descrição" styleClass="col-esquerdo">
+								<h:inputText id="acaoDesc" value="#{acao.nome}" required="true"
+									requiredMessage="A descrição da Ação é obrigatória"
+									rendered="#{crudAcao.selecionado eq acao }" />
+								<h:outputText value="#{acao.nome}"
+									rendered="#{crudAcao.selecionado ne acao }" />
+								<p:message style="color:red; font-size:10px;" for="acaoDesc" />
+							</p:column>
+
+							<p:column headerText="" styleClass="col-currency"
+								style="width:36px">
+
+								<p:commandLink update="@form" action="#{crudAcao.salvar}"
+									rendered="#{crudAcao.selecionado eq acao }">
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.salvar']}" />
+								</p:commandLink>
+
+								<p:commandLink update="@form" action="#{crudAcao.editar}"
+									rendered="#{crudAcao.selecionado ne acao }">
+									<f:setPropertyActionListener value="#{acao}"
+										target="#{crudAcao.selecionado}" />
+									<img src="/auth/imagens/table-edit.png"
+										title="#{msg['commons.editar']}" />
+								</p:commandLink>
+
+								<p:commandLink action="#{crudAcao.excluir}" update="@form"
+									title="#{msg['commons.alterar'] }"
+									rendered="#{permissoes.acao.excluir}">
+									<f:setPropertyActionListener value="#{acao}"
+										target="#{crudAcao.selecionado}" />
+									<img src="/auth/imagens/table-minus.png"
+										title="#{msg['commons.excluir']}" />
+								</p:commandLink>
+
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+
+					<p:tab title="Projeto Finalistico">
+
+						<p:commandButton value="#{msg['commons.adicionar']}"
+							update="@form"
+							actionListener="#{crudProjetoFinalistico.adicionar}">
+							<f:setPropertyActionListener value="2"
+								target="#{crudOrgao.tabSelecionada}" />
+						</p:commandButton>
+
+						<p:dataTable var="pf" value="#{crudOrgao.selecionado.projetos}"
+							emptyMessage="Nenhuma PF encontrado.">
+							<p:column headerText="PF" styleClass="col-esquerdo">
+								<h:inputText id = "pf" value="#{pf.numero}" required="true"
+									requiredMessage="O número do PF é obrigatório"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf }" />
+								<h:outputText value="#{pf.numero}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }" />
+								<p:message style="color:red; font-size:10px;" for="pf" />
+							</p:column>
+
+							<p:column headerText="Descrição" styleClass="col-esquerdo">
+								<h:inputText id="pfDesc" value="#{pf.nome}" required="true"
+									requiredMessage="A descrição do PF é obrigatória"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf }" />
+								<h:outputText value="#{pf.nome}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }" />
+								<p:message style="color:red; font-size:10px;" for="pfDesc" />
+							</p:column>
+
+							<!-- <p:column headerText="Valor Tesouro" styleClass="col-direito">
+
+								<h:inputText id="pfVt" value="#{pf.valorTesouro}" required="true"
+									requiredMessage="O Valor do Tesouro é obrigatório"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf }" />
+
+								<h:outputText value="#{pf.valorTesouro}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }" />
+								<p:message style="color:red; font-size:10px;" for="pfVt" />
+								
+							</p:column> -->
+
+							<!-- <p:column headerText="Valor Outras Fontes"
+								styleClass="col-direito">
+
+								<h:inputText id="pfVof" value="#{pf.valorOutrasFontes}" required="true"
+									requiredMessage="O Valor das Outras Fontes é obrigatório"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf }" />
+
+								<h:outputText value="#{pf.valorOutrasFontes}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }" />
+								<p:message style="color:red; font-size:10px;" for="pfVof" />
+
+							</p:column> -->
+
+
+							<p:column headerText="Ano" styleClass="col-centralizado">
+								<h:inputText id="pfAno" value="#{pf.ano}" required="true"
+									requiredMessage="O Ano é obrigatório"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf}" />
+								<h:outputText value="#{pf.ano}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }" />
+								<p:message style="color:red; font-size:10px;" for="pfAno" />
+							</p:column>
+
+							<p:column headerText="" styleClass="col-currency"
+								style="width:36px">
+
+								<p:commandLink update="@form"
+									action="#{crudProjetoFinalistico.salvar}"
+									rendered="#{crudProjetoFinalistico.selecionado eq pf }">
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.salvar']}" />
+								</p:commandLink>
+
+								<p:commandLink update="@form"
+									action="#{crudProjetoFinalistico.editar}"
+									rendered="#{crudProjetoFinalistico.selecionado ne pf }">
+									<f:setPropertyActionListener value="#{pf}"
+										target="#{crudProjetoFinalistico.selecionado}" />
+									<img src="/auth/imagens/table-edit.png"
+										title="#{msg['commons.editar']}" />
+								</p:commandLink>
+
+								<p:commandLink action="#{crudProjetoFinalistico.excluir}"
+									update="@form" title="#{msg['commons.alterar'] }"
+									rendered="#{permissoes.pf.excluir}">
+									<f:setPropertyActionListener value="#{pf}"
+										target="#{crudProjetoFinalistico.selecionado}" />
+									<img src="/auth/imagens/table-minus.png"
+										title="#{msg['commons.excluir']}" />
+								</p:commandLink>
+
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+
+					<p:tab title="Dotação">
+						<p:commandButton value="#{msg['commons.adicionar']}"
+							update="@form" actionListener="#{crudDotacao.adicionar}">
+							<f:setPropertyActionListener value="3"
+								target="#{crudOrgao.tabSelecionada}" />
+
+						</p:commandButton>
+
+						<p:dataTable var="dotacao"
+							value="#{crudOrgao.selecionado.dotacoes}"
+							emptyMessage="Nenhuma dotação encontrado.">
+							<p:column headerText="Dotação" styleClass="col-centralizado">
+								<h:inputText id="dotacao" value="#{dotacao.numero}" required="true"
+									requiredMessage="O número da Dotação é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao }" />
+								<h:outputText value="#{dotacao.numero}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+								<p:message style="color:red; font-size:10px;" for="dotacao" />
+							</p:column>
+
+							<!-- <p:column headerText="Valor Tesouro" styleClass="col-direito">
+								<h:inputText id="dotacaoVt" value="#{dotacao.valorTesouro}" required="true"
+									requiredMessage="O Valor do Tesouro é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao }"
+									style="width: 150px;" />
+								<h:outputText value="#{dotacao.valorTesouro}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+								<p:message style="color:red; font-size:10px;" for="dotacaoVt" />
+							</p:column>
+							<p:column headerText="Valor Exec. Tesouro"
+								styleClass="col-direito">
+								<h:inputText id="dotacaoVet" value="#{dotacao.valorTesouroExe}" required="true"
+									requiredMessage="O Valor do Tesouro Exec. é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao }"
+									style="width: 150px;" />
+								<h:outputText value="#{dotacao.valorTesouroExe}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+								<p:message style="color:red; font-size:10px;" for="dotacaoVet" />
+							</p:column>
+
+							<p:column headerText="Saldo Tesouro" styleClass="col-direito">
+								<h:outputText
+									value="#{dotacao.valorTesouro - dotacao.valorTesouroExe}"
+									required="true"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+
+							</p:column>
+
+							<p:column headerText="Valor Outras Fontes"
+								styleClass="col-direito">
+								<h:inputText id="dotacaoVof" value="#{dotacao.valorOutrasFontes}"
+									required="true"
+									requiredMessage="O Valor das Outras Fontes é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao }"
+									style="width: 150px;" />
+								<h:outputText value="#{dotacao.valorOutrasFontes}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+								<p:message style="color:red; font-size:10px;" for="dotacaoVof" />
+							</p:column>
+
+
+							<p:column headerText="Valor Exec. Outras Fontes"
+								styleClass="col-direito">
+								<h:inputText id="dotacaoVeof" value="#{dotacao.valorOutrasFontesExe}"
+									required="true"
+									requiredMessage="O Valor das Outras Fontes Exec. é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao }"
+									style="width: 150px;" />
+								<h:outputText value="#{dotacao.valorOutrasFontesExe}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+								<p:message style="color:red; font-size:10px;" for="dotacaoVeof" />
+							</p:column>
+
+							<p:column headerText="Saldo Outras Fontes"
+								styleClass="col-direito">
+								<h:outputText
+									value="#{dotacao.valorOutrasFontes - dotacao.valorOutrasFontesExe}"
+									rendered="#{crudDotacao.selecionado ne dotacao }" />
+
+							</p:column> -->
+
+							<p:column headerText="Ano" styleClass="col-centralizado">
+								<h:inputText id="dotacaoAno"  value="#{dotacao.ano}" required="true"
+									requiredMessage="O Ano é obrigatório"
+									rendered="#{crudDotacao.selecionado eq dotacao}"
+									style="width: 80px;" />
+								<h:outputText value="#{dotacao.ano}"
+									rendered="#{crudDotacao.selecionado ne dotacao}" />
+								<p:message style="color:red; font-size:10px;" for="dotacaoAno" />
+							</p:column>
+
+							<p:column headerText="PF" styleClass="col-esquerdo">
+								<h:selectOneListbox value="#{dotacao.pf}" size="1"
+									rendered="#{crudDotacao.selecionado ne dotacao}"
+									disabled="true">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems value="#{crudOrgao.projetos}" />
+								</h:selectOneListbox>
+								<h:selectOneListbox value="#{dotacao.pf}" size="1"
+									rendered="#{crudDotacao.selecionado eq dotacao}"
+									disabled="false">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems value="#{crudOrgao.projetos}" />
+								</h:selectOneListbox>
+
+							</p:column>
+
+							<p:column headerText="" styleClass="col-currency"
+								style="width:36px">
+
+								<p:commandLink update="@form" action="#{crudDotacao.salvar}"
+									rendered="#{crudDotacao.selecionado eq dotacao}">
+									<f:setPropertyActionListener value="#{dotacao}"
+										target="#{crudDotacao.selecionado}" />
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.salvar']}" />
+								</p:commandLink>
+								<!-- </p:column>
+
+							<p:column styleClass="col-id" rendered="#{dotacao.id>0}"> -->
+								<p:commandLink update="@form" action="#{crudDotacao.editar}"
+									rendered="#{crudDotacao.selecionado ne dotacao}">
+									<f:setPropertyActionListener value="#{dotacao}"
+										target="#{crudDotacao.selecionado}" />
+									<img src="/auth/imagens/table-edit.png"
+										title="#{msg['commons.editar']}" />
+								</p:commandLink>
+
+								<p:commandLink action="#{crudDotacao.excluir}" update="@form"
+									title="#{msg['commons.alterar'] }"
+									rendered="#{permissoes.dotacao.excluir}">
+									<f:setPropertyActionListener value="#{dotacao}"
+										target="#{crudDotacao.selecionado}" />
+									<img src="/auth/imagens/table-minus.png"
+										title="#{msg['commons.excluir']}" />
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+
+
+					<p:tab title="Telefone">
+
+						<p:commandButton value="#{msg['commons.adicionar']}"
+							update="@form" actionListener="#{crudTelefone.adicionar}">
+							<f:setPropertyActionListener value="4"
+								target="#{crudOrgao.tabSelecionada}" />
+						</p:commandButton>
+
+						<p:dataTable var="telefone"
+							value="#{crudOrgao.selecionado.telefones}"
+							emptyMessage="Nenhum telefone encontrado.">
+							<p:column headerText="Número do Contrato" styleClass="col-esquerdo">
+								<p:inputMask id="telefone" value="#{telefone.numero}" required="true"
+									requiredMessage="O número do Telefone é obrigatório"
+									mask="999-9999"
+									rendered="#{crudTelefone.selecionado eq telefone }" />
+								<h:outputText value="#{telefone.numero}"
+									rendered="#{crudTelefone.selecionado ne telefone }" />
+								<p:message style="color:red; font-size:10px;" for="telefone" />
+							</p:column>
+
+							<p:column headerText="Tipo" styleClass="col-esquerdo">
+								<h:selectOneListbox value="#{telefone.tipo}" size="1"
+									rendered="#{crudTelefone.selecionado ne telefone }"
+									disabled="true">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems value="#{crudTelefone.tipos}" />
+								</h:selectOneListbox>
+								<h:selectOneListbox value="#{telefone.tipo}" size="1"
+									rendered="#{crudTelefone.selecionado eq telefone }"
+									disabled="false">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems value="#{crudTelefone.tipos}" />
+								</h:selectOneListbox>
+							</p:column>
+
+							<p:column headerText="Descrição" styleClass="col-esquerdo">
+								<h:inputText id="telefoneDesc" value="#{telefone.descricao}" required="true"
+									requiredMessage="A descrição é obrigatória"
+									rendered="#{crudTelefone.selecionado eq telefone }" />
+								<h:outputText value="#{telefone.descricao}"
+									rendered="#{crudTelefone.selecionado ne telefone }" />
+								<p:message style="color:red; font-size:10px;" for="telefoneDesc" />
+							</p:column>
+
+							<p:column headerText="" styleClass="col-currency"
+								style="width:36px">
+
+								<p:commandLink update="@form" action="#{crudTelefone.editar}"
+									rendered="#{crudTelefone.selecionado ne telefone}">
+									<f:setPropertyActionListener value="#{telefone}"
+										target="#{crudTelefone.selecionado}" />
+									<img src="/auth/imagens/table-edit.png"
+										title="#{msg['commons.editar']}" />
+								</p:commandLink>
+
+
+								<p:commandLink update="@form" action="#{crudTelefone.salvar}"
+									ajax="true" rendered="#{crudTelefone.selecionado eq telefone}">
+									<img src="/auth/imagens/table-ok.png"
+										title="#{msg['commons.salvar']}" />
+								</p:commandLink>
+
+
+								<!-- rendered="#{permissoes.telefone.excluir}"> -->
+								<p:commandLink action="#{crudTelefone.excluir}" update="@form"
+									title="#{msg['commons.alterar'] }"
+									rendered="#{permissoes.telefone.excluir}">
+									<f:setPropertyActionListener value="#{telefone}"
+										target="#{crudTelefone.selecionado}" />
+									<img src="/auth/imagens/table-minus.png"
+										title="#{msg['commons.excluir']}" />
+								</p:commandLink>
+
+
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+
+				</p:tabView>
+			</fieldset>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

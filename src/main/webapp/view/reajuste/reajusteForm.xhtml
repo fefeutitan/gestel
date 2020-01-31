@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['reajuste.title']}</ui:define>
+		<ui:define name="operacao">${msg[crudOrgao.selecionado.id gt 0 ? 'commons.alterar' : 'commons.criar']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudReajuste}" cancelar="true"
+				novo="#{permissoes.reajuste.criar}" salvar="true" analise="false"
+				enviar="false" />
+		</ui:define>
+
+		<ui:define name="body">
+
+			<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+				columnClasses="rotulo,none">
+				<seinfra:outputText id="out-orgao-nome"
+					value="#{crudConta.usuario.unidadeAdministrativa.nome}"
+					label="#{msg['orgao.title']}" />
+				<seinfra:outputText id="out-orgao-sigla"
+					value="#{crudConta.usuario.unidadeAdministrativa.sigla}"
+					label="#{msg['orgao.sigla']}" />
+			</p:panelGrid>
+
+			<fieldset>
+				<legend>${msg['reajuste.title']}</legend>
+
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+					columnClasses="rotulo,none">
+
+					<seinfra:inputText id="Ano" label="#{msg['conta.ano']}"
+						value="#{crudReajuste.selecionado.ano}" style="width: 100px;"
+						rendered="true" maxlength="4" />
+
+					<seinfra:inputText id="valorReajusteOF"
+						label="#{msg['conta.vlr.reajuste.of']}"
+						value="#{crudReajuste.selecionado.valorReajusteOutraFonte}"
+						style="width: 150px;" />
+
+					<seinfra:inputText id="valorReajusteT"
+						label="#{msg['conta.vlr.reajuste.t']}"
+						value="#{crudReajuste.selecionado.valorReajusteTesouro}"
+						style="width: 150px;" />
+
+					<h:outputLabel value="#{msg['conta.dotacao']}:" />
+					<h:selectOneListbox value="#{crudReajuste.selecionado.dotacao}"
+						size="1" style="width: 150px;" rendered="true">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{crudReajuste.dotacoes}" />
+					</h:selectOneListbox>
+				</p:panelGrid>
+			</fieldset>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>

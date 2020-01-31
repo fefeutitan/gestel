@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+	<c:if test="#{empty styleClass}">
+		<c:set var="styleClass" value="data" />
+	</c:if>
+    
+	<c:if test="#{empty required}">
+		<c:set var="required" value="false" />
+	</c:if>
+
+	<c:if test="#{empty rendered}">
+		<c:set var="rendered" value="true" />
+	</c:if>
+	
+	<c:if test="#{empty placeholder}">
+        <c:set var="placeholder" value="dd/mm/aaaa" />
+    </c:if>
+    
+	<c:if test="#{empty mask}">
+        <c:set var="mask" value="99/99/9999" />
+    </c:if>
+    
+	<c:if test="#{empty pattern}">
+        <c:set var="pattern" value="dd/MM/yyyy" />
+    </c:if>
+	
+	<c:if test="#{not empty label}">
+	   <h:outputLabel value="#{label}:" for="#{id}" rendered="#{rendered}" />
+	</c:if>
+
+    <h:column rendered="#{rendered}">
+        <p:inputMask id="#{id}" value="#{value}" mask="#{mask}" styleClass="default #{styleClass}" style="#{style}" disabled="#{disabled}" pt:placeholder="#{placeholder}" rendered="#{not readonly}">
+            <f:convertDateTime pattern="#{pattern}" timeZone="GMT-3"/>
+        </p:inputMask>
+    	
+        <h:outputText value="#{value}" rendered="#{readonly}" style="#{style}" styleClass="#{styleClass}">
+            <f:convertDateTime pattern="#{pattern}" timeZone="GMT-3"/>
+        </h:outputText>
+        
+		<c:if test="#{required}">
+	       <span class="required">*</span>
+	    </c:if>
+	</h:column>
+	
+</ui:composition>

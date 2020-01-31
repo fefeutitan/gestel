@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form styleClass="menu-principal">
+		<p:menubar id="menu" styleClass="menu">
+			<p:submenu label="#{msg['commons.menu.cadastros']}">
+				<p:menuitem ajax="false" action="#{crudOrgao.iniciar()}"
+					value="#{msg['orgao.title']}" rendered="#{permissoes.orgao.ver}" />
+				<p:menuitem ajax="false" action="#{crudConta.iniciar()}"
+					value="#{msg['conta.title']}" rendered="#{permissoes.conta.ver}" />
+				<p:menuitem ajax="false" action="#{crudReajuste.iniciar()}"
+					value="#{msg['conta.reajuste']}"
+					rendered="#{permissoes.reajuste.ver}" />
+			</p:submenu>
+
+			<p:submenu label="#{msg['commons.menu.consultas']}">
+				<p:menuitem ajax="false" action="#{crudAnalise.iniciar()}"
+					value="#{msg['conta.ftr']}" rendered="#{permissoes.analise.ver}" />
+				<p:menuitem ajax="false" action="#{viewResumoBean.iniciar()}"
+					value="#{msg['resumo.vinculacao']}" />
+
+			</p:submenu>
+
+			<p:submenu label="#{msg['commons.menu.relatorios']}">
+				<p:menuitem ajax="false" action="#{viewResumoBean.relatorio()}"
+					value="#{msg['resumo.vinculacao']}" />
+			</p:submenu>
+
+		</p:menubar>
+	</h:form>
+
+</ui:composition>

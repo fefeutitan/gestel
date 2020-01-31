@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<c:if test="#{empty rendered}">
+		<c:set var="rendered" value="true" />
+	</c:if>
+    
+    <c:if test="#{empty reRender}">
+        <c:set var="reRender" value="false" />
+    </c:if>
+    
+	<c:if test="#{empty id}">
+        <c:set var="id" value="checkbox_#{dataCorrente.time}" />
+    </c:if>
+	
+
+    <h:column>
+	   <h:selectBooleanCheckbox id="#{id}" value="#{value}" rendered="#{rendered}" disabled="#{disabled}">
+           <a4j:support reRender="formulario" event="onchange" rendered="#{reRender}"/>
+       </h:selectBooleanCheckbox>
+    	
+    	<c:if test="#{not empty label}">
+    	   <h:outputLabel value="#{label}" for="#{id}" rendered="#{rendered}" />
+    	</c:if>
+	</h:column>
+	
+</ui:composition>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+	<navigation-rule>
+        <from-view-id>*</from-view-id>
+        
+        <navigation-case>  
+            <from-outcome>cancelar</from-outcome>  
+            <to-view-id>/index.xhtml</to-view-id>  
+        </navigation-case>  
+        
+        <navigation-case>
+            <from-outcome>listOrgao</from-outcome>  
+            <to-view-id>/view/orgao/orgaoList.xhtml</to-view-id>  
+        </navigation-case>
+        
+          <navigation-case>
+            <from-outcome>listConta</from-outcome>  
+            <to-view-id>/view/conta/contaList.xhtml</to-view-id>  
+        </navigation-case>
+        
+          <navigation-case>
+            <from-outcome>reajusteList</from-outcome>  
+            <to-view-id>/view/reajuste/reajusteList.xhtml</to-view-id>  
+        </navigation-case>
+        
+          <navigation-case>
+            <from-outcome>reajusteForm</from-outcome>  
+            <to-view-id>/view/reajuste/reajusteForm.xhtml</to-view-id>  
+        </navigation-case>
+        
+        
+          <navigation-case>
+            <from-outcome>viewAnalise</from-outcome>  
+            <to-view-id>/view/analise/viewAnaliseForm.xhtml</to-view-id>  
+        </navigation-case>
+        
+         <navigation-case>
+            <from-outcome>viewResumoOrgao</from-outcome>  
+            <to-view-id>/view/resumo/viewResumoForm.xhtml</to-view-id>  
+        </navigation-case>
+    </navigation-rule>
+    
+    <!-- orgao - orgao - orgao - orgao - orgao -->
+    <!-- orgao - orgao - orgao - orgao - orgao -->
+    <!-- orgao - orgao - orgao - orgao - orgao -->
+    <!-- orgao - orgao - orgao - orgao - orgao -->
+    <navigation-rule>
+        <from-view-id>/view/orgao/orgaoList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudEditar</from-outcome>
+            <to-view-id>/view/orgao/orgaoForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/orgao/orgaoForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudListar</from-outcome>
+            <to-view-id>/view/orgao/orgaoList.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/orgao/orgaoForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/orgao/orgaoForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudSalvar</from-outcome>
+            <to-view-id>/view/orgao/orgaoForm.xhtml</to-view-id>
+        </navigation-case>
+    
+    </navigation-rule>
+    
+    
+      
+    <!-- conta - conta - conta - conta - conta -->
+    <!-- conta - conta - conta - conta - conta -->
+    <!-- conta - conta - conta - conta - conta -->
+    <!-- conta - conta - conta - conta - conta -->
+
+    <navigation-rule>
+        <from-view-id>/view/conta/contaList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudEditar</from-outcome>
+            <to-view-id>/view/conta/contaForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/conta/contaForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudListar</from-outcome>
+            <to-view-id>/view/conta/contaList.xhtml</to-view-id>
+        </navigation-case>
+         <navigation-case>
+            <from-outcome>viewDados</from-outcome>
+            <to-view-id>/view/conta/viewContaForm.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/conta/contaForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/conta/contaForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudSalvar</from-outcome>
+            <to-view-id>/view/conta/contaForm.xhtml</to-view-id>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>viewValidarDados</from-outcome>
+            <to-view-id>/view/conta/viewContaForm.xhtml</to-view-id>
+        </navigation-case>
+        
+		<navigation-case>
+			<from-outcome>viewRelatorioVinculacao</from-outcome>
+			<to-view-id>/view/resumo/viewRelatorioVinculacao.jspx</to-view-id>
+		</navigation-case>
+    
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/conta/viewContaForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudSalvar</from-outcome>
+            <to-view-id>/view/conta/contaList.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+     
+    <navigation-rule>
+        <from-view-id>/view/analise/viewAnaliseForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>viewResumo</from-outcome>
+            <to-view-id>/view/analise/viewResumoForm.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+       
+    <navigation-rule>
+        <from-view-id>/view/analise/viewResumoForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>viewAnalise</from-outcome>
+            <to-view-id>/view/analise/viewAnaliseForm.xhtml</to-view-id>
+        </navigation-case>
+         <navigation-case>
+            <from-outcome>viewParecer</from-outcome>
+            <to-view-id>/view/analise/viewParecerForm.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+         
+    <navigation-rule>
+        <from-view-id>/view/analise/viewParecerForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>viewResumo</from-outcome>
+            <to-view-id>/view/analise/viewResumoForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>cancelar</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/reajuste/reajusteForm.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/reajuste/reajusteForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudSalvar</from-outcome>
+            <to-view-id>/view/reajuste/reajusteForm.xhtml</to-view-id>
+        </navigation-case>
+    
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/reajuste/reajusteList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>crudNovo</from-outcome>
+            <to-view-id>/view/reajuste/reajusteForm.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudSalvar</from-outcome>
+            <to-view-id>/view/reajuste/reajusteForm.xhtml</to-view-id>
+        </navigation-case>
+    
+    </navigation-rule>
+    
+</faces-config>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:seinfra="http://www.seinfra.ce.gov.br/facelets">
+
+<f:view>
+	<ui:composition template="/templates/padrao.xhtml">
+
+		<ui:define name="title">${msg['commons.conferir.dados']}</ui:define>
+		<ui:define name="operacao">${msg['commons.conferencia']}</ui:define>
+
+
+		<ui:define name="toolbar">
+			<seinfra:toolbar formulario="#{crudConta}" cancelar="true"
+				enviar="#{crudConta.selecionado.isEditavel()}" analise="false" />
+		</ui:define>
+		<ui:define name="body">
+			<fieldset>
+
+				<legend>${msg['orgao.title']}</legend>
+				<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+					columnClasses="rotulo,none">
+					<seinfra:outputText id="out-orgao-nome"
+						value="#{crudConta.usuario.unidadeAdministrativa.nome}"
+						label="#{msg['orgao.title']}" />
+					<seinfra:outputText id="out-orgao-sigla"
+						value="#{crudConta.usuario.unidadeAdministrativa.sigla}"
+						label="#{msg['orgao.sigla']}" />
+				</p:panelGrid>
+			</fieldset>
+			<h:panelGrid columns="2" styleClass="tab-edita" cellspacing="0"
+				columnClasses="width-60,width-40" style="width: 100%;">
+				<h:column>
+
+					<fieldset>
+						<legend>${msg['conta.title']}</legend>
+						<p:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+							columnClasses="rotulo,none">
+
+							<p:dataTable var="valor" resizableColumns="true"
+								value="#{crudConta.selecionado.valores}"
+								emptyMessage="Nenhum valor encontrado.">
+
+								<p:column headerText="Mês Referência" styleClass="col-currency">
+
+									<seinfra:outputDate id="dataMesReferencia"
+										value="#{valor.mesReferencia}" showCalendar="false"
+										pattern="MM/yyyy" mask="99/9999" timeZone="America/Fortaleza"
+										style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Mapp" styleClass="col-currency">
+
+									<h:outputText value="#{valor.mapp.numero}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Dotação" styleClass="col-currency">
+
+									<h:outputText value="#{valor.dotacao.numero}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Ação" styleClass="col-currency">
+
+									<h:outputText value="#{valor.acao.numero}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Projeto" styleClass="col-currency">
+
+									<h:outputText value="#{valor.pf.numero}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Usuário" styleClass="col-currency">
+
+									<h:outputText value="#{crudConta.usuario.nome}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Tesouro" styleClass="col-currency">
+
+									<h:outputText value="#{valor.valorTesouro}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+								<p:column headerText="Outra Fonte" styleClass="col-currency">
+
+									<h:outputText value="#{valor.valorOutraFonte}"
+										styleClass="col-currency" style="width: 100px;" />
+
+								</p:column>
+
+								<p:columnGroup rendered="true" type="footer">
+									<p:row>
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column footerText="Total: " styleClass="col-currency" />
+										<p:column styleClass="col-currency">
+											<f:facet name="footer">
+												<h:outputText value="#{crudConta.saldoTotal}">
+												</h:outputText>
+											</f:facet>
+										</p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+
+						</p:panelGrid>
+					</fieldset>
+
+
+
+
+					<fieldset>
+						<legend>${msg['conta.ftr']}</legend>
+
+						<h:panelGrid styleClass="tab-edita" cellspacing="0" columns="2"
+							columnClasses="rotulo,none">
+
+							<p:dataTable var="fatura" resizableColumns="true"
+								value="#{crudConta.selecionado.faturas}"
+								emptyMessage="Nenhuma Fatura encontrada.">
+
+								<p:column headerText="Telefone" styleClass="col-currency">
+
+									<h:outputText value="#{fatura.telefone.numero}" />
+
+								</p:column>
+
+								<p:column headerText="Valor" styleClass="col-currency">
+
+									<h:outputText value="#{fatura.valorFatura}" />
+
+								</p:column>
+
+								<p:column headerText="Código de Barras"
+									styleClass="col-esquerdo">
+
+									<h:outputText value="#{fatura.cdBarras}" />
+
+								</p:column>
+
+
+								
+
+									<p:columnGroup rendered="true" type="footer">
+										<p:row>
+											<p:column footerText="Total: " styleClass="col-currency" />
+											<p:column styleClass="col-currency">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.valorTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											
+											<p:column styleClass="col-currency" style="color:green;" rendered="#{crudConta.verificaTotal eq 'Total Confere' }">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.verificaTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											
+											<p:column styleClass="col-currency" style="color:red;" rendered="#{crudConta.verificaTotal ne 'Total Confere' }">
+												<f:facet name="footer">
+													<h:outputText value="#{crudConta.verificaTotal}">
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+
+
+							</p:dataTable>
+
+						</h:panelGrid>
+					</fieldset>
+
+
+					<fieldset>
+						<legend>${msg['conta.anexo']}</legend>
+
+
+
+						<p:dataTable id="table-imagens"
+							value="#{crudConta.selecionado.imagens}" var="imagem"
+							styleClass="lista-admin" rowClasses="odd, zebra">
+
+							<p:column styleClass="col-esquerdo"
+								headerText="#{msg['imagem.nome']}">
+								<h:outputText value="#{imagem.nome}" />
+							</p:column>
+
+							<p:column styleClass="col-direito"
+								headerText="#{msg['imagem.tamanho']}">
+								<h:outputText value="#{imagem.tamanho}" />
+							</p:column>
+
+							<p:column styleClass="col-centralizado"
+								headerText="#{msg['imagem.paginas']}">
+								<h:outputText value="#{imagem.paginas}" />
+							</p:column>
+
+							<p:column styleClass="col-centralizado"
+								headerText="#{msg['imagem.download']}">
+								<a href="#{imagem.url}" target="_blanc"><img
+									src="/auth/imagens/icone-32-download.png" /></a>
+							</p:column>
+
+						</p:dataTable>
+
+					</fieldset>
+				</h:column>
+			</h:panelGrid>
+
+		</ui:define>
+
+	</ui:composition>
+</f:view>
+</html>
